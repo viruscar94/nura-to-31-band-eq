@@ -43,13 +43,39 @@ edges_hsv = cv2.Canny(cuthsv, 20, 100)
 
 edges = (edges_img + edges_gray + edges_blue + edges_red + edges_green + 
          edges_value + edges_saturation + edges_hue + edges_hsv)
-drawedges = cutimg.copy()
-drawedges[edges != 0] = (0, 0, 0)
-cv2.imwrite("drawedgestest.png", drawedges)
+
+# draw edge
+draw = cutimg.copy()
+draw[edges != 0] = (0, 0, 0)
+
+# draw line for 31 band eq
+theta = np.pi*0.0625 # 0.0625 = 2pi/32
+for n in range(1,32):
+    linemask = np.zeros_like(edges)
+    x, y = np.array([w/2,w/2]) + np.array([np.sin(theta*n), -np.cos(theta*n)])*w*0.45
+    x, y = int(x), int(y)
+    cv2.line(linemask, (w//2, w//2), (x, y), 200, 2)
+    draw[linemask != 0] = (0, 0, 0)
+
+    # find intersection of edge and line
+    intersection = (edges != 0) * (linemask != 0)
+
+    intersection_x, intersection_y = np.where(intersection)
+    max_l = 0
+    point_x, point_y = np.array([w/2,w/2]) + np.array([np.sin(theta), -np.cos(theta)])*radius
+    for i in range(len(intersection_x)):
+        l = np.sqrt((intersection_x[i]-w/2)**2 + (intersection_y[i]-w/2)**2)
+        l_from_radius = abs(l-radius)
+        if l_from_radius > max_l:
+            max_l = l_from_radius
+            point_x, point_y = intersection_x[i], intersection_y[i]
+
+    cv2.circle(draw, (point_y, point_x), radius=5, color=(0, 0, 200), thickness=-1)
+
+cv2.imwrite("drawedgestest.png", draw)
 
 
 # draw the circle
 for i in circles[0]:
     cv2.circle(gray, (int(i[0]), int(i[1])), int(i[2]), (0, 0, 0), 1)
-
 
