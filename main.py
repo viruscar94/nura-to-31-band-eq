@@ -80,7 +80,7 @@ for n in range(1,32):
                 cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 200))
     eq_31band[n-1] = [eq_31band[n-1], max_l]
 
-cv2.imwrite("drawedgestest.png", draw)
+#cv2.imwrite("drawedgestest.png", draw)
 
 # make txt for eq
 txt_31eq = "GraphicEQ: "
