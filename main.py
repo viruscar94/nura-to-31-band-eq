@@ -6,7 +6,7 @@ img = cv2.imread("nura profile.png")
 
 # convert image to gray scale
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-cv2.imwrite("graytest.png", gray)
+#cv2.imwrite("graytest.png", gray)
 
 # find center of the circle profile
 circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, dp=1, minDist=100, 
@@ -20,7 +20,7 @@ h, w = gray.shape
 
 # cut img
 cutimg = img[center[1]-center[0]:center[1]+center[0],:,:]
-cv2.imwrite("cuttest.png", cutimg)
+#cv2.imwrite("cuttest.png", cutimg)
 
 # find edge with multiple color space
 edges_img = cv2.Canny(cutimg, 20, 100)
@@ -50,6 +50,8 @@ draw[edges != 0] = (0, 0, 0)
 
 # draw line for 31 band eq
 theta = np.pi*0.0625 # 0.0625 = 2pi/32
+eq_31band = [20, 25, 31.5, 40, 50, 63, 80, 100, 125, 160, 200, 250, 315, 400, 500, 630, 800, 
+             1000, 1250, 1600, 2000, 2500, 3150, 4000, 5000, 6300, 8000, 10000, 12500, 16000, 20000]
 for n in range(1,32):
     linemask = np.zeros_like(edges)
     x, y = np.array([w/2,w/2]) + np.array([np.sin(theta*n), -np.cos(theta*n)])*w*0.45
@@ -62,20 +64,26 @@ for n in range(1,32):
 
     intersection_x, intersection_y = np.where(intersection)
     max_l = 0
+    abs_max_l = 0
     point_x, point_y = np.array([w/2,w/2]) + np.array([np.sin(theta), -np.cos(theta)])*radius
     for i in range(len(intersection_x)):
         l = np.sqrt((intersection_x[i]-w/2)**2 + (intersection_y[i]-w/2)**2)
-        l_from_radius = abs(l-radius)
-        if l_from_radius > max_l:
+        # find distance from radius to intersection
+        l_from_radius = (l-radius)/radius*10
+        if abs(l_from_radius) > abs_max_l:
             max_l = l_from_radius
+            abs_max_l = abs(l_from_radius)
             point_x, point_y = intersection_x[i], intersection_y[i]
-
+            
+    eq_31band[n-1] = [eq_31band[n-1], str(round(max_l, 1))]
     cv2.circle(draw, (point_y, point_x), radius=5, color=(0, 0, 200), thickness=-1)
+    cv2.putText(draw, str(eq_31band[n-1]), (x-int(radius*0.12), y), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 200))
 
 cv2.imwrite("drawedgestest.png", draw)
 
-
-# draw the circle
-for i in circles[0]:
-    cv2.circle(gray, (int(i[0]), int(i[1])), int(i[2]), (0, 0, 0), 1)
+# make txt for eq
+txt_31eq = "GraphicEQ: "
+for i in range(31):
+    num = str(float(eq_31band[i][1])*-1)
+    txt_31eq += str(eq_31band[i][0]) + " " + num + "; "
 
