@@ -75,15 +75,19 @@ for n in range(1,32):
             abs_max_l = abs(l_from_radius)
             point_x, point_y = intersection_x[i], intersection_y[i]
             
-    eq_31band[n-1] = [eq_31band[n-1], str(round(max_l, 1))]
     cv2.circle(draw, (point_y, point_x), radius=5, color=(0, 0, 200), thickness=-1)
-    cv2.putText(draw, str(eq_31band[n-1]), (x-int(radius*0.12), y), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 200))
+    cv2.putText(draw, str((eq_31band[n-1], str(round(max_l, 1)))), (x-int(radius*0.12), y), 
+                cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 200))
+    eq_31band[n-1] = [eq_31band[n-1], max_l]
 
 cv2.imwrite("drawedgestest.png", draw)
 
 # make txt for eq
 txt_31eq = "GraphicEQ: "
 for i in range(31):
-    num = str(float(eq_31band[i][1])*-1)
+    num = str(round(eq_31band[i][1]*-2, 2))
     txt_31eq += str(eq_31band[i][0]) + " " + num + "; "
 
+f = open("equalizer apo 31 band.txt", "w")
+f.write(txt_31eq[:-2])
+f.close()
