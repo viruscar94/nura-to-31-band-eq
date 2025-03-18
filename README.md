@@ -3,8 +3,7 @@ This is python script that convert nura profile into equalizer apo 31 band graph
 
 # How to get nura profile
 * Open nura app and touch share tap
-![image](https://github.com/user-attachments/assets/f7c21565-d014-4a32-897f-351c5692f87a)
-
+<img src="https://github.com/user-attachments/assets/f7c21565-d014-4a32-897f-351c5692f87a" width=50% height=50%>
 
 * Touch share profile
 ![image](https://github.com/user-attachments/assets/116b9632-c633-4413-8aec-cb36062d8b64)
