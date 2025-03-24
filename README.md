@@ -18,9 +18,12 @@ This is python script that convert nura profile into equalizer apo 31 band graph
 
 # How to convert nura profile into equalizer apo?
 
-* Download main.py and your profile then move both to same folder
+* Download your profile then rename the profile 'nura profile.png'
+
+* Download main.py then move to same folder
 
 * Run script then you can get 'equalizer apo 31 band.txt'
+  (you need to install opencv pakage with python)
 
 * install equalizer apo and create 31 band equalizer
 ![image](https://github.com/user-attachments/assets/b13cc37f-26eb-4f42-a799-f0fbc950568d)
